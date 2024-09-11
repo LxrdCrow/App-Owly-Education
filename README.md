@@ -1,4 +1,4 @@
-# Owly Courses API
+# # App-Owly-Education
 
 ## Descrizione del Progetto
 
@@ -95,8 +95,8 @@ Questo progetto è un'implementazione di un'API RESTful per la gestione di corsi
 1. Clona il repository:
 
    ```bash
-   git clone https://github.com/tuo-username/owly-courses-api.git
-   cd owly-courses-api
+   git clone https://github.com/LxrdCrow/App-Owly-Education.git
+   cd App-Owly-Education
    ```
 
 2. Importa la struttura del database eseguendo lo script migrations.sql in MySQL:
