@@ -1,16 +1,21 @@
-# # App-Owly-Education
+# App-Owly-Education
 
 ## Descrizione del Progetto
 
-Questo progetto è un'implementazione di un'API RESTful per la gestione di corsi cross-funzionali progettati per stimolare la curiosità dei più piccoli. L'API permette l'inserimento, la modifica, la cancellazione e il filtraggio di corsi e materie. Il progetto è basato su PHP, utilizza MySQL come database e PDO per la prevenzione di attacchi SQL Injection.
-
-
+Questo progetto è un'implementazione di un'API RESTful per la gestione di corsi cross-funzionali progettati per stimolare la curiosità dei più piccoli. L'API consente l'inserimento, la modifica, la cancellazione e la visualizzazione di corsi e materie, utilizzando **PHP** con **MySQL** e **PDO** per la gestione del database e la prevenzione di attacchi SQL Injection. Include anche l'utilizzo di **modelli** e **controller** per organizzare meglio il codice seguendo l'architettura MVC.
 
 ## Funzionalità Principali
 
-- **Gestione delle Materie**: Inserimento, modifica e cancellazione di materie (caratterizzate dal solo nome).
+- **Gestione delle Materie**: Inserimento, modifica e cancellazione delle materie, che includono un semplice nome.
 - **Gestione dei Corsi**: Inserimento, modifica e cancellazione di corsi, con specifica del nome, delle materie correlate e dei posti disponibili.
-- **Filtraggio dei Corsi**: Possibilità di visualizzare e filtrare i corsi in base al nome, alle materie e ai posti disponibili.
+- **Visualizzazione e Filtraggio dei Corsi**: Possibilità di visualizzare e filtrare i corsi in base a nome, materie e numero di posti disponibili.
+- **Relazione Corsi-Materie**: È stata implementata una tabella di relazione che collega i corsi con le materie.
+
+## Struttura del Progetto
+
+- **Controllers**: I controller gestiscono la logica per le operazioni CRUD sui corsi e le materie.
+- **Models**: I modelli rappresentano i dati del database e contengono metodi per interagire con esso.
+- **Routes**: L'applicazione utilizza un router per smistare le richieste API alle azioni appropriate nei controller.
 
 ## Endpoint API
 
@@ -18,7 +23,7 @@ Questo progetto è un'implementazione di un'API RESTful per la gestione di corsi
 
 - **Aggiungere una materia**  
   - **Metodo:** `POST`
-  - **Endpoint:** `/api/subjects.php`
+  - **Endpoint:** `/subjects`
   - **Body (JSON):**  
     ```json
     { "name": "Nome della materia" }
@@ -26,25 +31,21 @@ Questo progetto è un'implementazione di un'API RESTful per la gestione di corsi
 
 - **Modificare una materia**  
   - **Metodo:** `PUT`
-  - **Endpoint:** `/api/subjects.php`
+  - **Endpoint:** `/subjects/{id}`
   - **Body (JSON):**  
     ```json
-    { "id": 1, "name": "Nome modificato" }
+    { "name": "Nome modificato" }
     ```
 
 - **Cancellare una materia**  
   - **Metodo:** `DELETE`
-  - **Endpoint:** `/api/subjects.php`
-  - **Body (JSON):**  
-    ```json
-    { "id": 1 }
-    ```
+  - **Endpoint:** `/subjects/{id}`
 
 ### Corsi
 
 - **Aggiungere un corso**  
   - **Metodo:** `POST`
-  - **Endpoint:** `/api/courses.php`
+  - **Endpoint:** `/courses`
   - **Body (JSON):**  
     ```json
     { 
@@ -56,11 +57,10 @@ Questo progetto è un'implementazione di un'API RESTful per la gestione di corsi
 
 - **Modificare un corso**  
   - **Metodo:** `PUT`
-  - **Endpoint:** `/api/courses.php`
+  - **Endpoint:** `/courses/{id}`
   - **Body (JSON):**  
     ```json
     { 
-      "id": 1,
       "name": "Nome modificato", 
       "available_slots": 15, 
       "subjects": [1, 3] 
@@ -69,18 +69,14 @@ Questo progetto è un'implementazione di un'API RESTful per la gestione di corsi
 
 - **Cancellare un corso**  
   - **Metodo:** `DELETE`
-  - **Endpoint:** `/api/courses.php`
-  - **Body (JSON):**  
-    ```json
-    { "id": 1 }
-    ```
+  - **Endpoint:** `/courses/{id}`
 
 - **Visualizzare e filtrare i corsi**  
   - **Metodo:** `GET`
-  - **Endpoint:** `/api/courses.php`
+  - **Endpoint:** `/courses`
   - **Parametri di filtro (facoltativi):**  
     - `name`: Nome del corso (es. `?name=Scienze`)
-    - `subject`: Nome della materia (es. `?subject=Matematica`)
+    - `subject`: ID della materia (es. `?subject=1`)
     - `available_slots`: Numero di posti disponibili (es. `?available_slots=10`)
 
 ## Requisiti Tecnici
@@ -89,6 +85,7 @@ Questo progetto è un'implementazione di un'API RESTful per la gestione di corsi
 - **MySQL** 5.7 o superiore
 - **PDO** per la gestione delle query al database
 - **Postman** o **cURL** per testare le API
+- **Composer** per la gestione delle dipendenze
 
 ## Installazione
 
@@ -99,19 +96,40 @@ Questo progetto è un'implementazione di un'API RESTful per la gestione di corsi
    cd App-Owly-Education
    ```
 
-2. Importa la struttura del database eseguendo lo script migrations.sql in MySQL:
-   
+2. Installa le dipendenze PHP tramite Composer:
+
+   ```bash
+   composer install
+   ```
+
+3. Crea il database e importa lo schema:
+
    ```bash
    mysql -u username -p database_name < migrations.sql
    ```
 
-3. Configura il tuo file di connessione al database in config/database.php.
-   
-4. Avvia il server PHP integrato o configura un server locale (es. Apache):
+4. Configura il file `.env` con le credenziali del database:
+
+   ```env
+   DB_HOST=localhost
+   DB_NAME=owly_learning
+   DB_USER=your_username
+   DB_PASS=your_password
+   ```
+
+5. Avvia il server PHP:
 
    ```bash
    php -S localhost:8000
    ```
 
-5. Testa le API utilizzando strumenti come Postman o cURL.
+6. Testa le API utilizzando strumenti come Postman o cURL.
+
+## Struttura del Database
+
+- **Subjects**: Tabella per la gestione delle materie (id, name)
+- **Courses**: Tabella per la gestione dei corsi (id, name, available_slots)
+- **Course_Subject**: Tabella di relazione tra corsi e materie (course_id, subject_id)
+
+
    
